@@ -30,6 +30,3 @@ pattern = "**/*.{js,jsx,json}"
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", ".gitignore"]
 
-[gitHubImport.repo]
-nodejs = "https://github.com/replit/nodejs-template"
-
