@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './styles.css';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+// Use relative URLs since frontend is served from the same Flask app
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
 
 function App() {
     const [formData, setFormData] = useState({

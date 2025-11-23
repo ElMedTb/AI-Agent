@@ -111,8 +111,15 @@ def get_workflow_status(workflow_id):
 @app.route('/api/sample-data', methods=['GET'])
 def get_sample_data():
     """Generate sample employee data for testing"""
-    sample_data = generate_sample_employee_data()
-    return jsonify(sample_data), 200
+    try:
+        sample_data = generate_sample_employee_data()
+        return jsonify(sample_data), 200
+    except Exception as e:
+        logger.error(f"Error generating sample data: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
 
 
 @app.route('/api/skills', methods=['GET'])

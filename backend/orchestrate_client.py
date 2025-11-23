@@ -22,12 +22,14 @@ class OrchestrateClient:
             api_key: IBM watsonx Orchestrate API key
             api_url: Base URL for Orchestrate API
         """
-        self.api_key = api_key
-        self.api_url = api_url.rstrip('/')
+        self.api_key = api_key or None
+        self.api_url = api_url.rstrip('/') if api_url else 'https://api.watsonx.orchestrate.ibm.com'
+        # Only set auth header if API key is provided
         self.headers = {
-            'Authorization': f'Bearer {api_key}',
             'Content-Type': 'application/json'
         }
+        if self.api_key:
+            self.headers['Authorization'] = f'Bearer {self.api_key}'
     
     def execute_workflow(self, workflow_id: str, input_data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -61,7 +63,7 @@ class OrchestrateClient:
             
             # Simulate workflow execution for demo purposes
             # In production, this would return actual Orchestrate response
-            if self.api_key == 'demo_key' or not self.api_key:
+            if not self.api_key or self.api_key == 'demo_key':
                 return self._simulate_workflow_execution(input_data)
             
             return {
