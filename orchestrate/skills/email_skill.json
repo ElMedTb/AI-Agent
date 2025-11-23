@@ -1,0 +1,71 @@
+{
+    "skill_id": "email_skill",
+    "name": "Send Email",
+    "description": "Sends emails using Gmail API",
+    "type": "gmail",
+    "version": "1.0.0",
+    "configuration": {
+        "api_endpoint": "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+        "authentication": {
+            "type": "oauth2",
+            "client_id": "${GMAIL_CLIENT_ID}",
+            "client_secret": "${GMAIL_CLIENT_SECRET}",
+            "scope": "https://www.googleapis.com/auth/gmail.send"
+        }
+    },
+    "input_schema": {
+        "type": "object",
+        "required": [
+            "to",
+            "subject",
+            "body"
+        ],
+        "properties": {
+            "to": {
+                "type": "string",
+                "format": "email",
+                "description": "Recipient email address"
+            },
+            "subject": {
+                "type": "string",
+                "description": "Email subject line"
+            },
+            "body": {
+                "type": "string",
+                "description": "Email body content"
+            },
+            "cc": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "description": "CC recipients (optional)"
+            }
+        }
+    },
+    "output_schema": {
+        "type": "object",
+        "properties": {
+            "message_id": {
+                "type": "string",
+                "description": "Gmail message ID"
+            },
+            "status": {
+                "type": "string",
+                "description": "Email send status"
+            }
+        }
+    },
+    "example": {
+        "input": {
+            "to": "employee@company.com",
+            "subject": "Welcome to the Team!",
+            "body": "Welcome message content"
+        },
+        "output": {
+            "message_id": "1234567890",
+            "status": "sent"
+        }
+    }
+}

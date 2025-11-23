@@ -1,0 +1,35 @@
+language = "python3"
+run = "bash replit_start.sh"
+
+[interpreter]
+command = ["python3", "-u", "backend/app_with_frontend.py"]
+
+[deploy]
+run = ["sh", "-c", "cd backend && pip install -r requirements.txt && python app.py"]
+
+[env]
+PORT = "5000"
+FLASK_ENV = "development"
+PYTHONPATH = "${PYTHONPATH}:backend"
+
+[packager]
+language = "python3"
+ignoredPackages = ["unit_tests"]
+
+[packager.features]
+packageSearch = true
+guessImports = true
+enabled = true
+
+[languages.python3]
+pattern = "**/*.py"
+
+[languages.javascript]
+pattern = "**/*.{js,jsx,json}"
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", ".gitignore"]
+
+[gitHubImport.repo]
+nodejs = "https://github.com/replit/nodejs-template"
+

@@ -1,0 +1,77 @@
+{
+    "skill_id": "docs_skill",
+    "name": "Create Google Document",
+    "description": "Creates documents using Google Docs API",
+    "type": "google_docs",
+    "version": "1.0.0",
+    "configuration": {
+        "api_endpoint": "https://docs.googleapis.com/v1/documents",
+        "authentication": {
+            "type": "oauth2",
+            "client_id": "${GOOGLE_DOCS_CLIENT_ID}",
+            "client_secret": "${GOOGLE_DOCS_CLIENT_SECRET}",
+            "scope": "https://www.googleapis.com/auth/documents"
+        }
+    },
+    "input_schema": {
+        "type": "object",
+        "required": [
+            "title",
+            "content"
+        ],
+        "properties": {
+            "title": {
+                "type": "string",
+                "description": "Document title"
+            },
+            "content": {
+                "type": "string",
+                "description": "Document content (supports Markdown)"
+            },
+            "folder_id": {
+                "type": "string",
+                "description": "Google Drive folder ID to save document in (optional)"
+            },
+            "share_with": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "description": "Email addresses to share document with (optional)"
+            }
+        }
+    },
+    "output_schema": {
+        "type": "object",
+        "properties": {
+            "document_id": {
+                "type": "string",
+                "description": "Google Docs document ID"
+            },
+            "document_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "URL to view/edit document"
+            },
+            "status": {
+                "type": "string",
+                "description": "Document creation status"
+            }
+        }
+    },
+    "example": {
+        "input": {
+            "title": "Onboarding Guide",
+            "content": "# Welcome\n\nThis is your onboarding guide.",
+            "share_with": [
+                "employee@company.com"
+            ]
+        },
+        "output": {
+            "document_id": "1abc123def456",
+            "document_url": "https://docs.google.com/document/d/1abc123def456",
+            "status": "created"
+        }
+    }
+}

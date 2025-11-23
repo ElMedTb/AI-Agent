@@ -1,0 +1,73 @@
+{
+    "skill_id": "slack_skill",
+    "name": "Post Slack Message",
+    "description": "Posts messages to Slack channels using Slack API",
+    "type": "slack",
+    "version": "1.0.0",
+    "configuration": {
+        "api_endpoint": "https://slack.com/api/chat.postMessage",
+        "authentication": {
+            "type": "bearer_token",
+            "token": "${SLACK_BOT_TOKEN}"
+        }
+    },
+    "input_schema": {
+        "type": "object",
+        "required": [
+            "channel",
+            "message"
+        ],
+        "properties": {
+            "channel": {
+                "type": "string",
+                "description": "Slack channel name (e.g., #general) or channel ID"
+            },
+            "message": {
+                "type": "string",
+                "description": "Message content to post"
+            },
+            "additional_channels": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                },
+                "description": "Additional channels to post to (optional)"
+            },
+            "thread_ts": {
+                "type": "string",
+                "description": "Thread timestamp to reply in thread (optional)"
+            }
+        }
+    },
+    "output_schema": {
+        "type": "object",
+        "properties": {
+            "ts": {
+                "type": "string",
+                "description": "Message timestamp"
+            },
+            "channel": {
+                "type": "string",
+                "description": "Channel where message was posted"
+            },
+            "status": {
+                "type": "string",
+                "description": "Message post status"
+            }
+        }
+    },
+    "example": {
+        "input": {
+            "channel": "#general",
+            "message": "Welcome new team member!",
+            "additional_channels": [
+                "#engineering"
+            ]
+        },
+        "output": {
+            "ts": "1234567890.123456",
+            "channel": "C1234567890",
+            "status": "posted"
+        }
+    }
+}

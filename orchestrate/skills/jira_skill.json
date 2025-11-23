@@ -1,0 +1,138 @@
+{
+    "skill_id": "jira_skill",
+    "name": "Create Jira Task",
+    "description": "Creates tasks/issues in Jira using Jira REST API",
+    "type": "jira",
+    "version": "1.0.0",
+    "configuration": {
+        "api_endpoint": "${JIRA_BASE_URL}/rest/api/3/issue",
+        "authentication": {
+            "type": "basic_auth",
+            "username": "${JIRA_EMAIL}",
+            "api_token": "${JIRA_API_TOKEN}"
+        }
+    },
+    "input_schema": {
+        "type": "object",
+        "required": [
+            "project_key",
+            "tasks"
+        ],
+        "properties": {
+            "project_key": {
+                "type": "string",
+                "description": "Jira project key (e.g., ONB, PROJ)"
+            },
+            "tasks": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "required": [
+                        "summary",
+                        "description"
+                    ],
+                    "properties": {
+                        "summary": {
+                            "type": "string",
+                            "description": "Task summary/title"
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "Task description"
+                        },
+                        "issue_type": {
+                            "type": "string",
+                            "enum": [
+                                "Task",
+                                "Story",
+                                "Bug",
+                                "Epic"
+                            ],
+                            "description": "Issue type - defaults to Task"
+                        },
+                        "assignee": {
+                            "type": "string",
+                            "description": "Assignee email or account ID"
+                        },
+                        "due_date": {
+                            "type": "string",
+                            "format": "date",
+                            "description": "Due date (YYYY-MM-DD)"
+                        },
+                        "priority": {
+                            "type": "string",
+                            "enum": [
+                                "Lowest",
+                                "Low",
+                                "Medium",
+                                "High",
+                                "Highest"
+                            ],
+                            "description": "Task priority - defaults to Medium"
+                        }
+                    }
+                },
+                "description": "Array of tasks to create"
+            }
+        }
+    },
+    "output_schema": {
+        "type": "object",
+        "properties": {
+            "created_issues": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "issue_key": {
+                            "type": "string",
+                            "description": "Jira issue key (e.g., ONB-123)"
+                        },
+                        "issue_id": {
+                            "type": "string",
+                            "description": "Jira issue ID"
+                        },
+                        "summary": {
+                            "type": "string",
+                            "description": "Issue summary"
+                        },
+                        "url": {
+                            "type": "string",
+                            "format": "uri",
+                            "description": "URL to view issue in Jira"
+                        }
+                    }
+                }
+            },
+            "status": {
+                "type": "string",
+                "description": "Overall status of task creation"
+            }
+        }
+    },
+    "example": {
+        "input": {
+            "project_key": "ONB",
+            "tasks": [
+                {
+                    "summary": "Set up workstation",
+                    "description": "Prepare workstation for new employee",
+                    "assignee": "it-team@company.com",
+                    "due_date": "2024-02-15",
+                    "priority": "High"
+                }
+            ]
+        },
+        "output": {
+            "created_issues": [
+                {
+                    "issue_key": "ONB-123",
+                    "issue_id": "10001",
+                    "summary": "Set up workstation",
+                    "url": "https://company.atlassian.net/browse/ONB-123"
+                }
+            ],
+            "status": "success"
+        }
+    }
+}

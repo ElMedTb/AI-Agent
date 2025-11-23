@@ -1,0 +1,152 @@
+{
+    "workflow_id": "onboarding_workflow",
+    "name": "HR Onboarding Workflow",
+    "description": "Automates the complete onboarding process for new employees across multiple tools",
+    "version": "1.0.0",
+    "steps": [
+        {
+            "step_id": "validate_input",
+            "name": "Validate Input",
+            "type": "validation",
+            "skill": null,
+            "input": {
+                "employee_name": "{{input.employee_name}}",
+                "email": "{{input.email}}",
+                "department": "{{input.department}}",
+                "start_date": "{{input.start_date}}"
+            },
+            "conditions": {
+                "required_fields": [
+                    "employee_name",
+                    "email",
+                    "department",
+                    "start_date"
+                ]
+            }
+        },
+        {
+            "step_id": "send_welcome_email",
+            "name": "Send Welcome Email",
+            "type": "skill",
+            "skill": "email_skill",
+            "input": {
+                "to": "{{input.email}}",
+                "subject": "Welcome to the Team, {{input.employee_name}}!",
+                "body": "Dear {{input.employee_name}},\n\nWelcome to our team! We're excited to have you join us as a {{input.position}} in the {{input.department}} department.\n\nYour start date is {{input.start_date}}, and your manager will be {{input.manager}}.\n\nWe've set up your onboarding process and you'll receive more information shortly.\n\nBest regards,\nHR Team"
+            },
+            "depends_on": [
+                "validate_input"
+            ]
+        },
+        {
+            "step_id": "create_calendar_events",
+            "name": "Create Calendar Events",
+            "type": "skill",
+            "skill": "calendar_skill",
+            "input": {
+                "summary": "Orientation Session - {{input.employee_name}}",
+                "description": "Welcome orientation for {{input.employee_name}}, {{input.position}}",
+                "start_date": "{{input.start_date}}",
+                "duration_minutes": 120,
+                "attendees": [
+                    "{{input.email}}",
+                    "{{input.manager}}"
+                ]
+            },
+            "depends_on": [
+                "validate_input"
+            ]
+        },
+        {
+            "step_id": "create_onboarding_doc",
+            "name": "Create Onboarding Document",
+            "type": "skill",
+            "skill": "docs_skill",
+            "input": {
+                "title": "Onboarding Guide - {{input.employee_name}}",
+                "content": "# Onboarding Guide for {{input.employee_name}}\n\n## Employee Information\n- **Name:** {{input.employee_name}}\n- **Position:** {{input.position}}\n- **Department:** {{input.department}}\n- **Start Date:** {{input.start_date}}\n- **Manager:** {{input.manager}}\n\n## Welcome!\n\nWe're thrilled to have you join our team. This document contains all the information you need to get started.\n\n## First Week Checklist\n- [ ] Complete HR paperwork\n- [ ] Set up your workstation\n- [ ] Attend orientation session\n- [ ] Meet with your manager\n- [ ] Review company policies\n\n## Resources\n- Company handbook\n- Team directory\n- IT support contact\n\n## Questions?\n\nFeel free to reach out to your manager or HR team."
+            },
+            "depends_on": [
+                "validate_input"
+            ]
+        },
+        {
+            "step_id": "post_slack_announcement",
+            "name": "Post Slack Announcement",
+            "type": "skill",
+            "skill": "slack_skill",
+            "input": {
+                "channel": "#general",
+                "message": "🎉 Welcome {{input.employee_name}} to the team! They're joining us as a {{input.position}} in {{input.department}}. Their start date is {{input.start_date}}. Please give them a warm welcome! 👋",
+                "additional_channels": [
+                    "#{{input.department|lower}}"
+                ]
+            },
+            "depends_on": [
+                "validate_input"
+            ]
+        },
+        {
+            "step_id": "create_jira_tasks",
+            "name": "Create Jira Tasks",
+            "type": "skill",
+            "skill": "jira_skill",
+            "input": {
+                "project_key": "ONB",
+                "tasks": [
+                    {
+                        "summary": "Set up workstation for {{input.employee_name}}",
+                        "description": "Prepare workstation, accounts, and access for new employee",
+                        "assignee": "IT Team",
+                        "due_date": "{{input.start_date}}"
+                    },
+                    {
+                        "summary": "Schedule 1:1 with {{input.employee_name}}",
+                        "description": "Initial meeting with new employee",
+                        "assignee": "{{input.manager}}",
+                        "due_date": "{{input.start_date}}"
+                    },
+                    {
+                        "summary": "Complete onboarding checklist for {{input.employee_name}}",
+                        "description": "Ensure all onboarding tasks are completed",
+                        "assignee": "HR Team",
+                        "due_date": "{{input.start_date}}"
+                    }
+                ]
+            },
+            "depends_on": [
+                "validate_input"
+            ]
+        },
+        {
+            "step_id": "send_confirmation",
+            "name": "Send Confirmation",
+            "type": "skill",
+            "skill": "email_skill",
+            "input": {
+                "to": "hr@company.com",
+                "subject": "Onboarding Complete - {{input.employee_name}}",
+                "body": "The onboarding workflow for {{input.employee_name}} has been completed successfully.\n\nActions taken:\n- Welcome email sent\n- Calendar events created\n- Onboarding document generated\n- Slack announcements posted\n- Jira tasks created\n\nEmployee Details:\n- Name: {{input.employee_name}}\n- Email: {{input.email}}\n- Department: {{input.department}}\n- Start Date: {{input.start_date}}"
+            },
+            "depends_on": [
+                "send_welcome_email",
+                "create_calendar_events",
+                "create_onboarding_doc",
+                "post_slack_announcement",
+                "create_jira_tasks"
+            ]
+        }
+    ],
+    "output": {
+        "workflow_id": "{{workflow_id}}",
+        "status": "completed",
+        "employee_name": "{{input.employee_name}}",
+        "actions_completed": [
+            "Welcome email sent to {{input.email}}",
+            "Calendar events created for orientation",
+            "Onboarding document created",
+            "Slack announcements posted",
+            "Jira tasks created"
+        ]
+    }
+}
